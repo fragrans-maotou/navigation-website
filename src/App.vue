@@ -36,13 +36,9 @@ const handleScroll = () => {
   sections.forEach(section => {
     const sectionTop = section.offsetTop
     const sectionHeight = section.offsetHeight
-    console.log("sectionTop:",sectionTop)
-    console.log("sectionHeight:",sectionHeight)
-    console.log("scrollPosition:",scrollPosition)
     if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
       // 发送当前活动区域ID到父组件
       const currentSectionId = section.getAttribute('id')
-      console.log("当前活动区域ID:",currentSectionId)
       
       // 触发自定义事件
       window.dispatchEvent(new CustomEvent('section-change', {
