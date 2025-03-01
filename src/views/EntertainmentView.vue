@@ -1,57 +1,30 @@
 <template>
-  <div class="entertainment-view">
-    <div class="page-header">
-      <h1>娱乐天地</h1>
-      <el-input
-        v-model="searchQuery"
-        placeholder="搜索娱乐内容..."
-        :prefix-icon="SearchIcon"
-        clearable
-      />
-    </div>
-
-    <el-tabs v-model="activeCategory" class="category-tabs">
-      <el-tab-pane 
-        v-for="category in categories" 
-        :key="category.value"
-        :label="category.label"
-        :name="category.value"
-      >
-        <div class="entertainment-grid">
-          <site-card
-            v-for="site in filteredSites"
-            :key="site.id"
-            :site="site"
-          />
-        </div>
-      </el-tab-pane>
-    </el-tabs>
-  </div>
+  <resource-list
+    title="娱乐天地"
+    searchPlaceholder="搜索娱乐内容..."
+    :categories="categories"
+    :items="sites"
+    defaultCategory="video"
+  />
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { Search as SearchIcon } from '@element-plus/icons-vue'
-import SiteCard from '@/components/SiteCard.vue'
+import ResourceList from '@/views/components/ResourceList.vue'
 
-const searchQuery = ref('')
-const activeCategory = ref('video')
-
-// 使用响应式引用存储数据
-const categories = ref([
+const categories = [
   { label: '视频媒体', value: 'video' },
   { label: '音乐平台', value: 'music' },
   { label: '游戏娱乐', value: 'game' },
   { label: '直播平台', value: 'live' },
   { label: '影视资源', value: 'movie' }
-])
+]
 
-const sites = ref([
+const sites = [
   {
     id: 1,
     name: 'Bilibili',
     desc: '国内知名的视频弹幕网站',
-    icon: '/icons/bilibili.png',
+    icon: 'https://www.bilibili.com/favicon.ico',
     url: 'https://www.bilibili.com',
     category: 'video',
     tags: ['视频', '动漫', '直播'],
@@ -63,34 +36,69 @@ const sites = ref([
     id: 2,
     name: 'QQ音乐',
     desc: '腾讯旗下音乐流媒体平台',
-    icon: '/icons/qqmusic.png',
+    icon: 'https://y.qq.com/favicon.ico',
     url: 'https://y.qq.com',
     category: 'music',
     tags: ['音乐', '播放器'],
     views: 800000,
     likes: 400000
   },
-  // 添加更多娱乐网站...
-])
-
-const filteredSites = computed(() => {
-  let result = sites.value
-
-  if (activeCategory.value !== 'all') {
-    result = result.filter(site => site.category === activeCategory.value)
+  {
+    id: 3,
+    name: '网易云音乐',
+    desc: '音乐流媒体服务',
+    icon: 'https://music.163.com/favicon.ico',
+    url: 'https://music.163.com',
+    category: 'music',
+    tags: ['音乐', '播放器', '社区'],
+    views: 900000,
+    likes: 450000
+  },
+  {
+    id: 4, 
+    name: '虎牙直播',
+    desc: '游戏直播平台',
+    icon: 'https://www.huya.com/favicon.ico',
+    url: 'https://www.huya.com',
+    category: 'live',
+    tags: ['直播', '游戏'],
+    views: 700000,
+    likes: 350000
+  },
+  {
+    id: 5,
+    name: '斗鱼直播',
+    desc: '游戏直播平台',
+    icon: 'https://www.douyu.com/favicon.ico',
+    url: 'https://www.douyu.com', 
+    category: 'live',
+    tags: ['直播', '游戏'],
+    views: 650000,
+    likes: 320000
+  },
+  {
+    id: 6,
+    name: 'YouTube',
+    desc: '全球最大的视频平台',
+    icon: 'https://www.youtube.com/favicon.ico',
+    url: 'https://www.youtube.com',
+    category: 'video',
+    tags: ['视频', '直播'],
+    views: 2000000,
+    likes: 1000000
+  },
+  {
+    id: 7,
+    name: 'Netflix',
+    desc: '全球流媒体视频网站',
+    icon: 'https://www.netflix.com/favicon.ico',
+    url: 'https://www.netflix.com',
+    category: 'movie',
+    tags: ['电影', '剧集'],
+    views: 1500000,
+    likes: 750000
   }
-
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    result = result.filter(site => 
-      site.name.toLowerCase().includes(query) ||
-      site.desc.toLowerCase().includes(query) ||
-      site.tags.some(tag => tag.toLowerCase().includes(query))
-    )
-  }
-
-  return result
-})
+]
 </script>
 
 <style lang="less" scoped>

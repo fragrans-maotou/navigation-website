@@ -1,181 +1,120 @@
 <template>
-  <div class="study-view">
-    <el-row :gutter="20">
-      <el-col :span="24">
-        <div class="page-header">
-          <h1>学习资源</h1>
-          <el-input
-            v-model="searchQuery"
-            placeholder="搜索学习资源..."
-            prefix-icon="Search"
-            clearable
-            @input="handleSearch"
-          />
-        </div>
-      </el-col>
-    </el-row>
-
-    <el-row :gutter="20">
-      <el-col :span="24">
-        <el-tabs v-model="activeCategory">
-          <el-tab-pane 
-            v-for="category in categories" 
-            :key="category.value" 
-            :label="category.label" 
-            :name="category.value"
-          >
-            <div class="resource-list">
-              <div v-for="group in groupedResources" :key="group.title" class="resource-group">
-                <h2 class="group-title">{{ group.title }}</h2>
-                <div class="resource-grid">
-                  <site-card
-                    v-for="resource in group.items"
-                    :key="resource.id"
-                    :site="resource"
-                    :featured="resource.featured"
-                  />
-                </div>
-              </div>
-            </div>
-          </el-tab-pane>
-        </el-tabs>
-      </el-col>
-    </el-row>
-
-    <el-backtop />
-  </div>
+  <resource-list
+    title="学习资源"
+    searchPlaceholder="搜索学习资源..."
+    :categories="categories"
+    :items="resources"
+    defaultCategory="all"
+  />
 </template>
 
-<script>
-import { ref, computed } from 'vue'
-import SiteCard from '@/components/SiteCard.vue'
+<script setup>
+import ResourceList from '@/views/components/ResourceList.vue'
 
-export default {
-  name: 'StudyView',
-  components: {
-    SiteCard
+const categories = [
+  { label: '全部', value: 'all' },
+  { label: '编程开发', value: 'programming' },
+  { label: '设计创意', value: 'design' },
+  { label: '语言学习', value: 'language' },
+  { label: '考证考级', value: 'certificate' },
+  { label: '职业技能', value: 'skills' }
+]
+
+const resources = [
+  {
+    id: 1,
+    name: 'Coursera',
+    desc: '全球顶尖大学在线课程平台',
+    icon: 'https://coursera.org/favicon.ico',
+    url: 'https://coursera.org',
+    category: 'programming',
+    tags: ['MOOC', '在线教育'],
+    featured: true,
+    badges: [{ text: '推荐', color: '#ff4757' }]
   },
-  setup() {
-    const searchQuery = ref('')
-    const activeCategory = ref('all')
-
-    const categories = [
-      { label: '全部', value: 'all' },
-      { label: '编程开发', value: 'programming' },
-      { label: '设计创意', value: 'design' },
-      { label: '语言学习', value: 'language' },
-      { label: '考证考级', value: 'certificate' },
-      { label: '职业技能', value: 'skills' }
-    ]
-
-    const resources = [
-      {
-        id: 1,
-        name: 'Coursera',
-        desc: '全球顶尖大学在线课程平台',
-        icon: '/icons/coursera.png',
-        url: 'https://coursera.org',
-        category: 'programming',
-        group: '在线课程平台',
-        tags: ['MOOC', '在线教育'],
-        featured: true,
-        badges: [
-          { text: '推荐', color: '#ff4757' }
-        ]
-      },
-      // 添加更多学习资源...
-    ]
-
-    const groupedResources = computed(() => {
-      let filtered = resources
-
-      if (activeCategory.value !== 'all') {
-        filtered = filtered.filter(r => r.category === activeCategory.value)
-      }
-
-      if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase()
-        filtered = filtered.filter(r => 
-          r.name.toLowerCase().includes(query) ||
-          r.desc.toLowerCase().includes(query) ||
-          r.tags.some(tag => tag.toLowerCase().includes(query))
-        )
-      }
-
-      // 按组分类
-      const groups = {}
-      filtered.forEach(resource => {
-        if (!groups[resource.group]) {
-          groups[resource.group] = {
-            title: resource.group,
-            items: []
-          }
-        }
-        groups[resource.group].items.push(resource)
-      })
-
-      return Object.values(groups)
-    })
-
-    return {
-      searchQuery,
-      activeCategory,
-      categories,
-      groupedResources
-    }
+  {
+    id: 2,
+    name: '慕课网',
+    desc: '程序员的实战视频课程平台',
+    icon: 'https://www.imooc.com/favicon.ico',
+    url: 'https://www.imooc.com',
+    category: 'programming',
+    tags: ['编程', '实战课程'],
+    views: 12000,
+    likes: 3500
+  },
+  {
+    id: 3,
+    name: '掘金',
+    desc: '帮助开发者成长的技术社区',
+    icon: 'https://juejin.cn/favicon.ico',
+    url: 'https://juejin.cn',
+    category: 'programming',
+    group: '技术社区',
+    tags: ['技术博客', '开发者社区'],
+    views: 15000,
+    likes: 4200
+  },
+  {
+    id: 4,
+    name: 'LeetCode',
+    desc: '全球极客挚爱的技术成长平台',
+    icon: 'https://leetcode.cn/favicon.ico',
+    url: 'https://leetcode.cn',
+    category: 'programming',
+    group: '算法训练',
+    tags: ['算法', '面试题'],
+    views: 10000,
+    likes: 3000
+  },
+  {
+    id: 5,
+    name: 'MDN',
+    desc: 'Web 开发技术权威文档',
+    icon: 'https://developer.mozilla.org/favicon.ico',
+    url: 'https://developer.mozilla.org',
+    category: 'programming',
+    group: '技术文档',
+    tags: ['Web开发', '文档'],
+    views: 8000,
+    likes: 2500
+  },
+  {
+    id: 6,
+    name: 'GitHub',
+    desc: '开源代码托管平台',
+    icon: 'https://github.com/favicon.ico',
+    url: 'https://github.com',
+    category: 'programming',
+    group: '代码托管',
+    tags: ['开源', '代码托管'],
+    views: 20000,
+    likes: 5000
+  },
+  {
+    id: 7,
+    name: 'Stack Overflow',
+    desc: '程序员问答社区',
+    icon: 'https://stackoverflow.com/favicon.ico',
+    url: 'https://stackoverflow.com',
+    category: 'programming',
+    group: '技术社区',
+    tags: ['问答', '编程社区'],
+    views: 18000,
+    likes: 4800
+  },
+  {
+    id: 8,
+    name: 'W3Schools',
+    desc: 'Web技术学习平台',
+    icon: 'https://www.w3schools.com/favicon.ico',
+    url: 'https://www.w3schools.com',
+    category: 'programming',
+    group: '在线教程',
+    tags: ['Web开发', '教程'],
+    views: 9000,
+    likes: 2800
   }
-}
+]
 </script>
 
-<style lang="less" scoped>
-.study-view {
-  .page-header {
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    h1 {
-      font-size: 2rem;
-      color: var(--primary-dark);
-      margin: 0;
-    }
-
-    .el-input {
-      width: 300px;
-    }
-  }
-
-  .resource-group {
-    margin-bottom: 3rem;
-
-    .group-title {
-      font-size: 1.5rem;
-      color: var(--primary-dark);
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--border-color);
-    }
-
-    .resource-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-  }
-}
-
-// 响应式设计
-@media (max-width: 768px) {
-  .study-view {
-    .page-header {
-      flex-direction: column;
-      gap: 1rem;
-
-      .el-input {
-        width: 100%;
-      }
-    }
-  }
-}
-</style> 

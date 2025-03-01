@@ -3,7 +3,7 @@
     <!-- 顶部 LOGO 和搜索 -->
     <header class="header">
       <div class="logo">
-        <router-link to="/">NAV</router-link>
+        <router-link to="/">您的导航站</router-link>
       </div>
       <div class="search-box">
         <el-input
@@ -15,39 +15,30 @@
     </header>
 
     <div class="container">
-      <AppSidebar></AppSidebar>
-      <main class="main-content" @scroll="handleScroll">
-        <router-view/>
+      <main class="main-content">
+        <router-view @pageScrolled="handlePageScrolled"/>
       </main>
+      <div class="running-cats-layer" v-show="showRunningCats">
+        <RunningCat />
+        <RunningCatMove />
+        <RunningCatMove />
+      </div>
     </div>
+
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { Calendar } from '@element-plus/icons-vue'
-import AppSidebar from '@/components/AppSidebar.vue'
+import RunningCat from './components/RunningCat.vue'
+import RunningCatMove from './components/RunningCatMove.vue'
+const searchQuery = ref('')  // 添加缺失的 searchQuery
+const showRunningCats = ref(true)
 
-// 监听滚动事件
-const handleScroll = () => {
-  const sections = document.querySelectorAll('.content-section')
-  const scrollPosition = document.querySelector('.main-content').scrollTop
-
-  sections.forEach(section => {
-    const sectionTop = section.offsetTop
-    const sectionHeight = section.offsetHeight
-    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-      // 发送当前活动区域ID到父组件
-      const currentSectionId = section.getAttribute('id')
-      
-      // 触发自定义事件
-      window.dispatchEvent(new CustomEvent('section-change', {
-        detail: { sectionId: currentSectionId }
-      }))
-    }
-  })
+const handlePageScrolled = (e) => {
+  showRunningCats.value = (e.id !== 'secondPage')
 }
-
 </script>
 
 <style lang="less">
@@ -63,17 +54,18 @@ const handleScroll = () => {
   // 主题色
   --primary: #2c3e50;
   --secondary: #34495e;
-  
+  --primary-dark: #1a2b3c;
+  --primary-gray: #333333;
   // 背景色
   --bg-primary: #ffffff;
   --bg-secondary: #f8f9fa;
   --bg-tertiary: #f1f3f5;
-  
+  --bg-light-gray: #f5f5f5;
   // 文字颜色
   --text-primary: #2c3e50;
   --text-secondary: #6c757d;
   --text-light: #909399;
-  
+  --text-secondary-gray: #333333;
   // 边框颜色
   --border-color: #e9ecef;
   
@@ -181,12 +173,23 @@ body {
   position: relative;
 }
 
+.running-cats-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  // background: red;
+}
+
 .main-content {
   flex: 1;
-  margin-left: 240px;
   height: calc(100vh - 64px);
   overflow-y: auto;
   position: relative;
+  z-index: 2;
   scroll-behavior: smooth;
 
   &::-webkit-scrollbar {
