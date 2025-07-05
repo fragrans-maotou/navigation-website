@@ -19,9 +19,9 @@
         <router-view @pageScrolled="handlePageScrolled"/>
       </main>
       <div class="running-cats-layer" v-show="showRunningCats">
-        <RunningCat />
+        <!-- <RunningCat />
         <RunningCatMove />
-        <RunningCatMove />
+        <RunningCatMove /> -->
       </div>
     </div>
 

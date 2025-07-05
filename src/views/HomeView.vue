@@ -1,33 +1,35 @@
 <template>
-  <div class="home" @scroll="handleScroll">
-    <div class="page1 full-page" ref="page1Ref">
-      <statistics-section :stats="statsData" />
-      <div style="display: flex; gap: 20px;">
-        <featured-section 
-          :sites="hotSites" 
-          @refresh="refreshHot"
-        />
-        <recent-updates :sites="recentSites" />
-      </div>
-    </div>
-
-    <el-row class="page2 full-page">
-      <el-col :span="2">
-        <AppSidebar v-if="containerRef" :container-ref="containerRef" />
-      </el-col>
-      <el-col :span="22">
-        <div class="content-container" ref="containerRef">
-          <section 
-            v-for="component in siteComponents" 
-            :key="component.name" 
-            :id="component.name" 
-            class="content-section"
-          >
-            <component :is="component.component" />
-          </section>
+  <div class="home">
+    <full-page ref="fullpage" :options="options" id="fullpage">
+      <div class="page1 full-page section" ref="page1Ref">
+        <statistics-section :stats="statsData" />
+        <div style="display: flex; gap: 20px;">
+          <featured-section 
+            :sites="hotSites" 
+            @refresh="refreshHot"
+          />
+          <recent-updates :sites="recentSites" />
         </div>
-      </el-col>
-    </el-row>
+      </div>
+
+      <el-row class="page2 full-page section">
+        <el-col :span="2">
+          <AppSidebar v-if="containerRef" :container-ref="containerRef" />
+        </el-col>
+        <el-col :span="22">
+          <div class="content-container" ref="containerRef">
+            <section 
+              v-for="component in siteComponents" 
+              :key="component.name" 
+              :id="component.name" 
+              class="content-section"
+            >
+              <component :is="component.component" />
+            </section>
+          </div>
+        </el-col>
+      </el-row>
+    </full-page>
   </div>
 </template>
 
@@ -48,6 +50,18 @@ const stats = ref({
   activeUsers: '45.6k',
   todayVisits: '12.3k'
 })
+
+const fullpage = ref(null)
+const options = ref({
+  licenseKey: 'YOUR_KEY_HERE',
+  menu: '#menu',
+  anchors: ['page1', 'page2', 'page3'],
+  sectionsColor: ['#41b883', '#ff5f45', '#0798ec'],
+  autoScrolling:true,
+  scrollHorizontally: true
+})
+
+
 
 const emit = defineEmits(['pageScrolled'])
 

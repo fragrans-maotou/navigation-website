@@ -7,6 +7,12 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
+// 采用fullPage.js
+import 'vue-fullpage.js/dist/style.css'
+import './fullpage.scrollHorizontally.min' // Optional. When using fullpage extensions
+import VueFullPage from 'vue-fullpage.js'
+
+
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
@@ -15,4 +21,5 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.use(ElementPlus)
   .use(store)
   .use(router)
+  .use(VueFullPage)
   .mount('#app')
